@@ -76,3 +76,18 @@ SELECT (
   	FROM patients
   	WHERE gender = 'F'
 ) AS total_females;
+
+-- Using GROUP BY on more than one column
+SELECT patient_id, diagnosis
+FROM admissions
+GROUP BY patient_id, diagnosis
+HAVING COUNT(*) > 1;
+
+-- Inserting hard-coded value on the fly 
+SELECT first_name, last_name, 'Patient' AS role
+FROM patients;
+
+-- Combining together the rows from two SELECT statements with similar column structure 
+SELECT first_name, last_name, 'Patient' AS role FROM patients
+UNION ALL
+SELECT first_name, last_name, 'Doctor' AS role FROM doctors;
