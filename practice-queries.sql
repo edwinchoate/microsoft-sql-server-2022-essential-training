@@ -147,3 +147,9 @@ SELECT
 	first_name, last_name, 
     CASE WHEN gender = 'M' THEN 'Male' ELSE 'Female' END AS gender
 FROM patients;
+
+
+-- Check if a value's found in another table (or not)
+SELECT patient_id, first_name, last_name
+FROM patients
+WHERE patient_id NOT IN (SELECT patient_id from admissions)
