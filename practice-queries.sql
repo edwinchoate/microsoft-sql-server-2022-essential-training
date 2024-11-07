@@ -1,5 +1,5 @@
 -- Practice SQL Queries (from the sql-practice.com challenges)
-
+-- SQLite
 
 -- String matching with wildcards
 SELECT first_name
@@ -124,3 +124,26 @@ LIMIT 1;
 SELECT *
 FROM admissions
 WHERE attending_doctor_id LIKE '%2%'; -- this id is an INT and this still works
+
+
+-- Multiple JOINs in a single query
+SELECT CONCAT(patients.first_name, ' ', patients.last_name) AS patient_name, diagnosis, CONCAT(doctors.first_name, ' ', doctors.last_name) AS doctor_name
+FROM admissions
+JOIN patients
+ON patients.patient_id = admissions.patient_id
+JOIN doctors
+ON admissions.attending_doctor_id = doctors.doctor_id
+
+
+-- In-query calculations and rounding
+SELECT 
+    (ROUND(height / 30.48, 1)) AS height, 
+    (ROUND(weight * 2.205, 0)) AS weight, 
+FROM patients;
+
+
+-- Conditionals (SQLite syntax)
+SELECT 
+	first_name, last_name, 
+    CASE WHEN gender = 'M' THEN 'Male' ELSE 'Female' END AS gender
+FROM patients;
