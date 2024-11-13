@@ -179,3 +179,101 @@ Restore a database from a `.bak` file:
 
 1. Place the `.bak` file into the Backup directory: `C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\Backup`
 2. Right-click on Databases -> Restore Database...
+
+## Ch. 4 Table Design for Healthy Databases 
+
+### Data Types 
+
+* `bit` 0 or 1. Like a boolean (1 bit)
+* `tinyint` 0 to 255 (1 byte)
+* `smallint` ~-32,000 to ~32,000 (2 bytes)
+* `int` ~-2 billion to ~2 billion (4 bytes) 
+* `bigint` ~-9x10<sup>18</sup> to ~9x10<sup>18</sup> (8 bytes)
+
+* `decimal(p,s)` aka `numeric(p,s)` (5 to 17 bytes)
+    * _precision (p)_ - total number of digits
+    * _scale (s)_ - number of those digits right of decimal point 
+* `smallmoney` ~-214,000.0000 to ~214,000.0000 (4 bytes)
+* `money` ~-922,000,000,000,000.0000 to ~922,000,000,000,000.0000 (8 bytes)
+
+* `time`
+* `date`
+* `datetime2`
+* `datetimeoffset`
+
+* `char(n)` fixed-len text (1 byte per char)
+* `varchar(n)` var-len text (1 byte per char)
+* `nchar(n)` fixed-len unicode text (2 bytes per char)
+* `nvarchar(n)` var-len unicode text (2 bytes per char)
+* `varchar(max)`, `nvarchar(max)` (`max` is a literal) gives you the max size to store text (up to 2GB!)
+
+[Data types (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16)
+
+### IDs
+
+How to set any int column to be an ID using SSMS:
+
+* Design -> Click on column -> Column Properties -> Identity Specification -> set (Is Identity) = Yes
+    * _Identity Increment_ - how much the ID changes when you add a new row 
+    * _Identity Seed_ - default/starting value of the ID 
+
+You can grab and drop the column order in the Design panel to change the column order in the table.
+
+### Primary Keys
+
+How to set a table's primary key using SSMS: 
+
+* open table Design panel -> select column -> Right-click -> Set Primary Key
+
+_composite key_ - combining multiple columns together and treating that combination as the unique key. 
+
+### Default Values
+
+Setting the default value of a column using SSMS: 
+
+* Design -> select column -> Column Properties -> Default Value or Binding
+
+`N'blah'` - this syntax means unicode (the N) string with a value of "blah"
+
+### Timestamps
+
+How to set a column to be an automated timestamp using SSMS: 
+
+* Design -> select column
+    1. Set the column's type to `datetime2`
+    2. Column Properties -> Default Value or Binding -> set the value to "getdate()"
+
+### Constraints
+
+_Check constraint_ - a table-level check that automatically runs when data is updated. Like a validation rule.
+
+Add a check constraint using SSMS: 
+
+* Design -> Right-click (anywhere) -> Check Constraints...
+* _Expression_ is the meat of the constraint. You can run excel-like functions in the expression. Ex: `LEN(LastName) >= 2`
+* This appears to be using `ALTER TABLE` under the hood
+
+_index_ - a pre-sorted copy of a column's values that SQL Server uses to perform optimized searches (like looking up if something's in a dictionary)
+
+_Unique constraint_ - SQL Server makes sure only unique values can be inserted in a given column 
+
+How to enforce a unique constraint using SSMS: 
+
+* Design -> Right-click (anywhere) -> Indexes/Keys... -> set Is Unique to Yes
+
+### Foreign Keys
+
+_foreign key_ - the primary key from some other table which associates two tables together
+
+Implementing a foreign key using SSMS:
+
+* Design -> Right-click (anywhere) -> Relationships... -> Add -> Tables and Columns Specification -> ellipsis button
+    * Make sure the primary key and foreign key columns have the exact same data type 
+
+Conventional constraint prefixes
+
+* `PK_` - Primary Key
+* `FK_` - Foreign Key
+* `CK_` - ChecK constraint
+* `IX_` - IndeX
+* `UX_` - Unique indeX
