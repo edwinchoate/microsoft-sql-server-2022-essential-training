@@ -134,3 +134,48 @@ CREATE TABLE Customers (
 	State nvarchar(50)
 );
 ```
+
+It's difficult to change Tables after they are created so try your best to think through the table design thoroughly beforehand. 
+
+Inserting a row of data into a table:
+
+```SQL
+INSERT INTO Customers
+(FirstName, LastName, State)
+VALUES ('Bob', 'Smith', 'TN');
+```
+
+Updating data: 
+
+```SQL
+UPDATE Customers
+SET
+    City = 'Chicago'
+WHERE FirstName = 'Billy';
+```
+
+How to limit # of results in the query in T-SQL:
+
+```SQL 
+SELECT TOP(5) * 
+FROM Customers;
+```
+
+Import a CSV file & create a new table using SSMS: 
+
+* Right-click on db -> Tasks -> Import Flat File...
+
+Import just the data from a CSV file (without creating a new table) using SSMS: 
+
+* Right-click on db -> Tasks -> Import Data...
+
+### Free Sample Databases from Microsoft
+
+[Github repo: microsoft/sql-server-samples](https://github.com/microsoft/sql-server-samples)
+
+* [Wide World Importers sample database](https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0)
+
+Restore a database from a `.bak` file: 
+
+1. Place the `.bak` file into the Backup directory: `C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\Backup`
+2. Right-click on Databases -> Restore Database...
