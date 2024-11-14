@@ -123,18 +123,6 @@ Types of Tables
 
 `dbo.` stands for "database owner" and is the default schema that will be used in your table names if you don't provide a schema name.
 
-How to create a simple table: 
-
-```SQL
-CREATE TABLE Customers (
-	FirstName nvarchar(50) NOT NULL, 
-	LastName nvarchar(50) NOT NULL,
-	Address nvarchar(100),
-	City nvarchar(50),
-	State nvarchar(50)
-);
-```
-
 It's difficult to change Tables after they are created so try your best to think through the table design thoroughly beforehand. 
 
 Inserting a row of data into a table:
@@ -241,7 +229,7 @@ How to set a column to be an automated timestamp using SSMS:
 
 * Design -> select column
     1. Set the column's type to `datetime2`
-    2. Column Properties -> Default Value or Binding -> set the value to "getdate()"
+    2. Column Properties -> Default Value or Binding -> set the value to `GETDATE()`
 
 ### Constraints
 
@@ -277,3 +265,78 @@ Conventional constraint prefixes
 * `CK_` - ChecK constraint
 * `IX_` - IndeX
 * `UX_` - Unique indeX
+
+## Ch. 5 Structured Query Language 
+
+[Transact-SQL reference (Database Engine)](https://learn.microsoft.com/en-us/sql/t-sql/language-reference?view=sql-server-ver16)
+
+T-SQL comments:
+
+```SQL
+-- Single line comment
+
+/* 
+Block
+comment
+*/
+```
+
+How to generate the CREATE TABLE code using SSMS: 
+
+* Right-click (on a table) -> Script Table as -> CREATE To -> New Query Editor Window
+
+```SQL
+CREATE TABLE [dbo].[dbo.Red30Tech_Orders](
+	[OrderID] [int] IDENTITY(1,1) NOT NULL,
+	[OrderDate] [date] NOT NULL,
+	[ProductID] [nvarchar](50) NOT NULL,
+	[Quantity] [int] NOT NULL,
+ CONSTRAINT [PK_dbo.Red30Tech_Orders] PRIMARY KEY CLUSTERED
+...
+```
+
+Example of a check constraint: 
+
+```SQL
+ALTER TABLE [dbo].[dbo.Red30Tech_Orders] CHECK CONSTRAINT [FK_dbo.Red30Tech_Orders_Red30Tech_Products]
+```
+
+
+Example of a foreign key constraint: 
+
+```SQL
+ALTER TABLE [dbo].[dbo.Red30Tech_Orders]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Red30Tech_Orders_Red30Tech_Products] FOREIGN KEY([ProductID])
+REFERENCES [dbo].[Red30Tech_Products] ([ProductID])
+```
+
+### Creating Tables 
+
+```SQL
+CREATE TABLE ProductCategories (
+	CategoryID int IDENTITY(1, 1) NOT NULL,
+	Name varchar(25) NOT NULL,
+	Abbrevation char(2) NOT NULL
+);
+```
+
+* `IDENTITY(X, Y)` - this function means the ID will start at X and increment by Y. 
+
+### Adding New Data 
+
+Adding one row:
+
+```SQL
+INSERT INTO ProductCategories
+(Name, Abbrevation)
+VALUES ('Blueprints', 'BP');
+```
+
+Adding multiple rows:
+
+```SQL
+INSERT INTO ProductCategories
+(Name, Abbrevation)
+VALUES ('Blueprints', 'BP')
+	('Training Videos', 'TV'),
+	('eBooks', 'EB');
+```
