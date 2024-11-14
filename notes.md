@@ -546,22 +546,99 @@ FROM Warehouse.VehicleTemperatures;
 
 ### Stored Procedures 
 
-Bundling SQL code that can be re-used
+_Stored procedure_ - bundling SQL code that can be re-used
 
 Creating a stored procedure:
 
 ```SQL
-CREATE PROC MySchema.myStoredProcedure
+CREATE PROCEDURE MySchema.myStoredProcedure
 AS
 -- Complex query goes here
 ```
 
+* You can also use the shorthand `PROC`
+
 Running a stored procedure:
 
 ```SQL
-EXEC MySchema.myStoredProcedure;
+EXECUTE MySchema.myStoredProcedure;
 ```
+
+* You can also use the shorthand `EXEC`
 
 * `sp_` is reserved for System stored procedures
 * `p` and `usp` are conventional prefixes ("procedure" and "user stored procedure" respectively)
 * Be sure to use a schema name in the stored procedure name 
+
+Where to browse the user-defined stored procedures using SSMS:
+
+* expand database -> Programmability -> Stored Procedures
+
+A SQL query for listing out the stored procedures:
+
+```SQL
+SELECT *
+FROM sys.procedures;
+```
+
+How to open the SQL of a user-defined stored procedure using SSMS: 
+
+* in Object Explorer, Right-click on stored procedure -> Script Stored Procedure as -> CREATE To -> New Query Editor Window
+
+Defining a stored procedure that has input parameters:
+
+```SQL
+CREATE PROCEDURE MySchema.myStoredProcedure
+    @MyParam int,
+    @AnotherParam nvarchar(50)
+AS
+BEGIN
+    ...
+END;
+```
+
+Giving a parameter a default value:
+
+```SQL
+CREATE PROCEDURE MySchema.myStoredProcedure
+    @SomeParam int = 5
+AS
+BEGIN
+    ...
+END;
+```
+
+Passing in parameter values when running a stored procedure: 
+
+```SQL
+EXECUTE MySchema.myStoredProcedure 23, 'Hello'
+```
+
+Editing an existing stored procedure:
+
+```SQL
+ALTER PROCEDURE MySchema.myStoredProcedure
+AS
+-- Complex query goes here 
+```
+
+Delete a stored procedure:
+
+```SQL
+DROP PROCEDURE MySchema.myStoredProcedure;
+```
+
+Print statements:
+
+```SQL
+PRINT 'hello world'
+```
+
+Conditionals:
+
+```SQL
+IF @SomeParam = 5
+BEGIN
+    ...
+END
+```
