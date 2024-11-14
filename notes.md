@@ -105,7 +105,7 @@ Create a new database:
 
 ```shell
 1> CREATE DATABASE MyDatabaseName
-2> go
+2> GO
 ```
 
 SQL Server creates the database on disk here: `C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\`.
@@ -438,3 +438,42 @@ ON Customers.CustomerID = Orders.CustomerID
 INNER JOIN Products
 ON Orders.ProductID = Products.ProductID;
 ```
+
+## Ch. 6 Writing Efficient Queries 
+
+### Views
+
+Views are read-only tables that allow you save complex queries.
+
+Creating a view using SSMS: 
+
+* Expand database -> "Views" -> Right-click -> New View
+* There's a visual designer interface for designing views
+    * Click checkboxes to quickly specify columns
+    * Draw lines to quickly specify joins
+    * UI for adding sort (ORDER BY) and filter (WHERE) using point-and-click
+    * SQL code is generated for you
+
+### Indexes
+
+_Heap_ - a table that lacks an index and must be scanned row-by-row to find things (not performant)
+
+_Index_ - optimizing searching data in a column by pre-organizing the data to allow for optimal algorithms to run (ex: BST, sorted list, etc.)
+
+* Primary keys use clustered indexing by default.
+* Unique constraints use indexing
+
+_Clustered index_ - index that uses the same order physically on-disk as it does in the index
+_Non-clustered index_ - an index that uses pointers (data on disk is mapped to the index)
+
+Creating an index: 
+
+```SQL
+CREATE NONCLUSTERED INDEX IX_Customers_LastName
+ON dbo.Customers 
+(LastName ASC);
+```
+
+Creating an index using SSMS: 
+
+* Design -> Right-click a column -> Indexes/Keys...
