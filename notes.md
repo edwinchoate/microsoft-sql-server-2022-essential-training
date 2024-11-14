@@ -16,8 +16,8 @@ You can have multiple _instances_ of SQL Server per server, and within each inst
 Tools
 
 * SQLCMD - a SQL cli tool
-    1. Run > `sqlcmd`
-    2. Run Command Prompt then type `sqlcmd` and hit enter
+    1. Run > `sqlcmd.exe`, or
+    2. Run `sqlcmd` inside of a Command Prompt or Powershell
 * [mssql-cli command-line query tool for SQL Server](https://learn.microsoft.com/en-us/sql/tools/mssql-cli?view=sql-server-ver16)
 * SQL Server Management Studio (SSMS) is Windows-Only
 * SQL Server Installation Center
@@ -115,7 +115,7 @@ Types of Tables
 
 * Table
 * Memory Optimized Table - can work with data in-memory, improving read/write speeds 
-* Temporary Table - has a built-in change history mechanism that tracks all changes that have been made to the data
+* Temporal Table - has a built-in change history mechanism that tracks all changes that have been made to the data
 * Ledger Table - an encrypted table that can show evidence of tampering as well as maintains a record of previous data values 
 * Graph Table - stores data like a node-connected graph
 * External Table - for Hadoop and Azure
@@ -258,7 +258,7 @@ Implementing a foreign key using SSMS:
 * Design -> Right-click (anywhere) -> Relationships... -> Add -> Tables and Columns Specification -> ellipsis button
     * Make sure the primary key and foreign key columns have the exact same data type 
 
-Conventional constraint prefixes
+Conventional prefixes
 
 * `PK_` - Primary Key
 * `FK_` - Foreign Key
@@ -336,7 +336,7 @@ Adding multiple rows:
 ```SQL
 INSERT INTO ProductCategories
 (Name, Abbrevation)
-VALUES ('Blueprints', 'BP')
+VALUES ('Blueprints', 'BP'),
 	('Training Videos', 'TV'),
 	('eBooks', 'EB');
 ```
