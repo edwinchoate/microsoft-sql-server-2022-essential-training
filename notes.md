@@ -477,3 +477,91 @@ ON dbo.Customers
 Creating an index using SSMS: 
 
 * Design -> Right-click a column -> Indexes/Keys...
+
+### Aggregate Functions 
+
+[What are the SQL database functions?](https://learn.microsoft.com/en-us/sql/t-sql/functions/functions?view=sql-server-ver16)
+
+* `COUNT()`
+* `MIN()`, `MAX()`
+* `AVG()`
+* `SUM()`
+* `STDEV()`
+* `VAR()` - variance
+* `UPPER()` - string to uppercase
+* `LOWER()`
+* `TRIM()` - for strings
+
+How to count how many values of a column occur within an aggregated group: 
+
+```SQL 
+-- For each last name, count how many different first names there are 
+SELECT COUNT(FirstName)
+FROM Customers
+GROUP BY LastName;
+```
+
+### Subqueries 
+
+Aka nested query
+
+```SQL
+-- Get the tall customers
+SELECT * 
+FROM Customers
+WHERE Customers.Height > 
+    (SELECT AVG(Customers.Height) FROM Customers);
+```
+
+You can look at the system aggregate functions in SSMS: 
+
+* database -> Programmability -> Functions -> System Functions
+
+### User-Defined Functions
+
+```SQL
+CREATE FUNCTION Warehouse.ToFahrenheit (@CelsiusTemp decimal(10, 2)) 
+RETURNS decimal(10, 2)
+AS 
+BEGIN 
+    DECLARE @FahrenheitTemp decimal(10, 2);
+    SET @FahrenheitTemp = (@CelsiusTemp * 1.8 + 32);
+    RETURN @FahrenheitTemp
+END;
+```
+
+* Functions, like tables, go in a schema (e.g. Warehouse)
+* Variables use the prefix `@`
+* `RETURNS <type>` is the equivalent of a function's return type in code
+* `BEGIN` and `END` are the equivalent of curly braces
+* `DECLARE` is the equivalent of a variable definition
+* `SET` is used for assignment
+
+Calling a user-defined function:
+
+```SQL
+SELECT Warehouse.ToFahrenheit(Temperature)
+FROM Warehouse.VehicleTemperatures;
+```
+
+### Stored Procedures 
+
+Bundling SQL code that can be re-used
+
+Creating a stored procedure:
+
+```SQL
+CREATE PROC MySchema.myStoredProcedure
+AS
+-- Complex query goes here
+```
+
+Running a stored procedure:
+
+```SQL
+EXEC MySchema.myStoredProcedure;
+```
+
+* `sp_` is reserved for System stored procedures
+* `p` and `usp` are conventional prefixes ("procedure" and "user stored procedure" respectively)
+* Be sure to use a schema name in the stored procedure name 
