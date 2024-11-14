@@ -26,18 +26,25 @@ Tools
 How to check SQL version via SQLCMD: 
 
 ```shell
-1> select @@Version
-2> go
+1> SELECT @@Version
+2> GO
 ```
 
 How to list all databases on the server via SQLCMD: 
 
 ```shell
 1> sp_databases
-2> go
+2> GO
 ```
 
 (`sp_` stands for stored procedure.)
+
+Tell sqlcmd to use a specific database: 
+
+```shell
+1> USE SomeDatabase
+2> GO
+```
 
 SQL Server Services
 
@@ -124,30 +131,6 @@ Types of Tables
 `dbo.` stands for "database owner" and is the default schema that will be used in your table names if you don't provide a schema name.
 
 It's difficult to change Tables after they are created so try your best to think through the table design thoroughly beforehand. 
-
-Inserting a row of data into a table:
-
-```SQL
-INSERT INTO Customers
-(FirstName, LastName, State)
-VALUES ('Bob', 'Smith', 'TN');
-```
-
-Updating data: 
-
-```SQL
-UPDATE Customers
-SET
-    City = 'Chicago'
-WHERE FirstName = 'Billy';
-```
-
-How to limit # of results in the query in T-SQL:
-
-```SQL 
-SELECT TOP(5) * 
-FROM Customers;
-```
 
 Import a CSV file & create a new table using SSMS: 
 
@@ -309,7 +292,7 @@ ALTER TABLE [dbo].[dbo.Red30Tech_Orders]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Red
 REFERENCES [dbo].[Red30Tech_Products] ([ProductID])
 ```
 
-### Creating Tables 
+### Creating Tables
 
 ```SQL
 CREATE TABLE ProductCategories (
@@ -321,7 +304,7 @@ CREATE TABLE ProductCategories (
 
 * `IDENTITY(X, Y)` - this function means the ID will start at X and increment by Y. 
 
-### Adding New Data 
+### Creating New Data with INSERT
 
 Adding one row:
 
@@ -339,4 +322,119 @@ INSERT INTO ProductCategories
 VALUES ('Blueprints', 'BP'),
 	('Training Videos', 'TV'),
 	('eBooks', 'EB');
+```
+
+### Reading Data with SELECT
+
+Fully qualifying the table name:
+
+```SQL
+SELECT *
+FROM SomeDatabase.SomeSchema.SomeTable;
+```
+
+How to limit # of results in the query in T-SQL:
+
+```SQL 
+SELECT TOP(5) * 
+FROM Customers;
+```
+
+More topics covered:
+
+* `SELECT *`
+* `TOP(N)`
+* `AND`
+* `OR`
+* `<=`, `>=`
+* `WHERE`
+* `ORDER BY`
+    * `ASC`
+    * `DESC`
+
+### Updating Data with UPDATE
+
+Updating data: 
+
+```SQL
+UPDATE Orders
+SET 
+    Quantity = 5
+WHERE OrderID = 623423;
+```
+
+```SQL
+-- !! This updates every row in the table
+UPDATE Orders
+SET 
+    Quantity = 5;
+```
+
+### Destroying Data with DELETE 
+
+```SQL
+DELETE
+FROM Customers
+WHERE CustomerID = 7324;
+```
+
+```SQL
+-- !! This deletes everything in the table
+DELETE FROM Customer;
+```
+
+If you try and delete data that other tables depend on (ex: a foreign key), the constraints of the database can help protect from the data becoming orphaned. Ex: Attemping to delete a Customer who has a CustomerID that's referenced as a foreign key in the Order table. The foreign key constraint of the Order table would force you to delete the order data before deleting the customer.
+
+Deleting all the rows, but keeping the table and its column definitions:
+
+```SQL
+TRUNCATE TABLE Customer;
+```
+
+Deleting the whole table (and all the data in it):
+
+```SQL
+DROP TABLE Customers;
+
+DROP TABLE IF EXISTS Customers;
+```
+
+### Combining Multiple Tables with JOIN
+
+Types of JOINs
+
+* `INNER JOIN` - only the intersecting part of the venn diagram
+* `LEFT JOIN` - the whole left circle of the venn diagram
+* `RIGHT JOIN` - the whole right circle of the venn diagram
+* `LEFT OUTER JOIN` - the left "crescent" (circle minus the middle intersecting part) of the venn diagram
+* `RIGHT OUTER JOIN` - the right "crescent" of the venn diagram
+* `FULL JOIN` - the whole venn diagram
+* `FULL OUTER JOIN` - the whole venn diagram minus the center intersecting part (both left + right "crescents")
+
+Basic join: 
+
+```SQL
+SELECT
+    Customer.FirstName, 
+    Customer.LastName, 
+    Orders.Quantity
+FROM Customers
+INNER JOIN Orders 
+ON Customers.CustomerID = Orders.CustomerID;
+```
+
+Joining more than two tables: 
+
+
+```SQL
+SELECT
+    Customer.FirstName, 
+    Customer.LastName, 
+    Orders.Quantity,
+    Products.Name
+FROM Customers
+INNER JOIN Orders 
+ON Customers.CustomerID = Orders.CustomerID
+INNER JOIN Products
+ON Orders.ProductID = Products.ProductID;
 ```
