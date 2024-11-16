@@ -687,3 +687,51 @@ Example Recommendation: Perform daily full backups once per day and then the res
 
 ### Restoring from a Backup
 
+Kick off a restore using SSMS:
+
+* Right-click on db -> Tasks -> Restore -> Database...
+    * Timeline...
+        * Shows a visual timeline UI 
+        * Allows you to restore a backup to an exact time, even between backups
+
+_Availability Groups_ - feature that provides redundancy for the database across multiple servers 
+
+_Log shipping_ - Slower than availability groups but doesn't require as expensive of server requirements. Uses a standby database with a built-in delay which allows you to catch big issues with the backup in time. Higher riks of data loss than Availability Groups
+
+* Link for Azure SQL Managed Instance - MS manages hardware and servers. Functions like a synced cloud backup. The cloud copy is read-only.
+
+## Ch. 8 Security 
+
+View the login accounts in SSMS: 
+
+* expand server -> Security -> Logins
+
+Add a new login account: 
+
+* Right-click on Logins -> New Login...
+* _Enforce password policy_ - this allows admins to enforce password strength requirements on the server.
+* Security -> Server Roles
+    * The roles for role-based permissions
+* Login Properties -> User Mapping 
+    * lets you control which databases the user login can access
+    * lets you set database-level permissions 
+
+Users can see all the db's on the server (even if they can't access them), but SQL Server Authen users can only see the other SQL Server Auth users.
+
+Server Roles
+
+* _sysadmin_ - can do anything. Highest level
+* _serveradmin_ - edit server config settings and shutdown server
+* _securityadmin_ - can manage user accounts
+* _dbcreator_ - can CREATE, ALTER, DROP, or RESTORE databases
+* _public_ - default role for all users
+
+Database-level Permissions
+
+Some of the common ones:
+
+* _db_owner_ - can do anything to the db
+* _db_backupoperator_ - can perform backups
+* _db_ddladmin_ - can edit table structures, datatypes, constraints, and relationships (ddl stands for data definition language)
+* _db_datawriter_ - add, update, and delete data in any table
+* _db_datareader_ - read data from any table 
