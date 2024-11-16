@@ -642,3 +642,48 @@ BEGIN
     ...
 END
 ```
+
+## Ch. 7 Backup and Restore 
+
+A `.bak` file is media file, like a container, that contains multiple sets of data. This means you can alter it (for example with a differential backup) without overriding/replacing the file.
+
+### Full Backups
+
+Backing up a db in SSMS:
+
+* Right-click on database -> Tasks -> Back Up...
+* _Backup type_
+    * _Full_ 
+    * _Differential_ - only backup records that have changed since last full backup
+    * _Transaction Log_
+
+You can convert the backup action to a SQL script using SSMS: 
+
+* Right-click db -> Tasks -> Back Up... -> Script -> Script Action to New Query Window
+    * This can be good for scripting automated backups as part of a larger process
+
+Example of a backup SQL script:
+
+```SQL
+BACKUP DATABASE [MyDatabase] TO 
+DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\Backup\MyDatabase.bak'
+WITH NOFORMAT,
+NOINIT,
+NAME = N'MyDatabase-Full Database Backup',
+SKIP,
+...
+```
+
+### Differential Backups
+
+1. Tasks -> Back Up... -> Set Backup type to Differential
+2. Use the _same_ .bak file as your previous backups
+3. Run
+
+Pros: Differential backups save storage space
+Cons: Differential backups make the restoration process more complicated 
+
+Example Recommendation: Perform daily full backups once per day and then the rest of the backups throughout the day are differential backups
+
+### Restoring from a Backup
+
