@@ -801,3 +801,64 @@ Encrypted data shows up in your query results as a long hex code.
 For users who have permissions to do this, they can view the data decrypted in SQL Server by logging into SQL Server using the encryption key.
 
 * Connect -> Options >> -> Always Encrypted tab -> Enabled Always Encrypted (column encryption)
+
+## Ch. 9 Monitoring and Management
+
+### System databases
+
+* _master_ - contains data that is essential for the server to function. logins, settings, users, etc. Critical
+* _model_ - acts like a template for all new databases that are created on the server 
+* _msdb_ - for the features: SQL Server Agent, Database Mail, SQL Server Service Broker, backup location & history
+* _tempdb_ - used by SQL Server when moving a lot of data around (ex: rebuilding indexes)
+
+How to increase the size & autogrowth settings of `tempdb` to improve performance:
+
+* Right-click on tempdb -> Properties -> Files
+    * Size (MB) column
+    * Autogrowth / Maxsize column
+* Right-click on tempdb -> Properties -> Options
+    * Recommendation: Set _Recovery model_ to _Simple_ to keep the log files from getting too large
+
+### SQL Server Error Logs
+
+Open the Log File Viewer
+
+* Expand server -> Management -> SQL Server Logs -> right-click -> View -> SQL Server Log
+
+### Dynamic Management Views 
+
+_Dynamic management view (DMV)_ a View/query for administrators. Ex: `sys.dm_db_file_space_usage`
+
+* VIEW SERVER STATE permission (server-scoped)
+* VIEW DATABASE STATE permission (database-scoped)
+
+Examples
+
+* `sys.dm_db_file_space_usage` - shows the amount of space each file has used
+* `sys.dm_exec_connections` - like a log that shows who's connecting to a database and when they are connecting 
+* `sys.dm_db_index_usage_stats` - shows info about when and how often indexes are being used 
+
+[System dynamic management views](https://learn.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/system-dynamic-management-views?view=sql-server-ver16)
+
+### Database Console Commands
+
+_Database console command (DBCC)_ - a command that's built in to SQL Server that useful for checking on the health of your database
+
+[DBCC (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-transact-sql?view=sql-server-ver16)
+
+Examples:
+
+```SQL 
+DBCC CHECKDB; 
+    /* Validates table data, runs checksums on filegroups, verifies content of
+    indexed views, validates Service Broker data, etc. */
+
+DBCC CHECKDB ('SomeDatabase', REPAIR_REBUILD); -- Attempts to fix issues found 
+
+DBCC CHECKFILEGROUP (0, NOINDEX) -- like CHECKDB for just one Filegroup
+    -- 0 means the primary filegroup
+    -- NOINDEX means it skips non-cluster indexes
+```
+
+---
+End of document
