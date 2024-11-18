@@ -716,7 +716,7 @@ Add a new login account:
     * lets you control which databases the user login can access
     * lets you set database-level permissions 
 
-Users can see all the db's on the server (even if they can't access them), but SQL Server Authen users can only see the other SQL Server Auth users.
+Users can see all the db's on the server (even if they can't access them), but SQL Server Auth users can only see the other SQL Server Auth users.
 
 Server Roles
 
@@ -732,6 +732,72 @@ Some of the common ones:
 
 * _db_owner_ - can do anything to the db
 * _db_backupoperator_ - can perform backups
-* _db_ddladmin_ - can edit table structures, datatypes, constraints, and relationships (ddl stands for data definition language)
+* _db_ddladmin_ - can edit table structures, datatypes, constraints, and relationships (DDL stands for Data Definition Language)
 * _db_datawriter_ - add, update, and delete data in any table
 * _db_datareader_ - read data from any table 
+
+### Schemas
+
+* If you don't specific a schema explicitly in your queries, SQL Server will look in the `dbo` schema.
+* You can give users different permissions for different schemas. Ex: read-only for customers schema, read and write for employee schema
+
+Create a new schema:
+
+```SQL
+CREATE SCHEMA sales;
+```
+
+Move a table from one schema to another:
+
+```SQL
+ALTER SCHEMA sales TRANSFER dbo.Customers;
+```
+
+Edit user permissions for a specific schema:
+
+```SQL
+GRANT INSERT ON SCHEMA :: sales TO Octavia;
+GRANT UPDATE ON SCHEMA :: sales TO Michael;
+GRANT DELETE ON SCHEMA :: sales TO Jane;
+```
+
+### Dynamic Data Masking
+
+_dynamic data masking_ - data is automatically masked in SQL Server before it is sent to the user. This masks data queried by SQL Server users who don't have permission to view the unmasked data. 
+
+How to mask fields: 
+
+```SQL
+ALTER TABLE sales.Customers
+ALTER COLUMN Address ADD MASKED WITH (Function = 'default()');
+```
+
+Masking functions
+
+* `default()` - XXX0XXX0000XXX (Xs were chars, 0s were numbers)
+* `email()` - XXXXXXXXX@gXXXX.com
+* `random(x, y)` - generates random numbers within specified range
+* `partial(n1, paddingStr, n2)` - lets you show n1 chars at the beginning, then the padding string, then n2 chars at the end. Ex: partial(3, '\*\*\*', 1) -> edw\*\*\*n
+
+### Encrypting Data
+
+SQL Server support easy encryption of sensitive data (ex: credit card numbers)
+
+Encryption Types
+
+* _Deterministic_ - always has the same results for a given input. This allows you to work with indexes and joins with the encrypted data. 
+* _Randomized_ - more secure but you don't get the same search/index/join functionality that you'd get with Deterministic
+
+Right-click on database -> Tasks -> Encrypt Columns...
+
+* Check which columns you want to encrypt
+* Choose Encryption Type for each column
+* _Windows certificate store_ stores the encryption key locally 
+
+You can view the certificate Windows created by going to: Control Panel -> Manage user certificates -> Certificates - Current User -> Personal -> Certificates
+
+Encrypted data shows up in your query results as a long hex code. 
+
+For users who have permissions to do this, they can view the data decrypted in SQL Server by logging into SQL Server using the encryption key.
+
+* Connect -> Options >> -> Always Encrypted tab -> Enabled Always Encrypted (column encryption)
